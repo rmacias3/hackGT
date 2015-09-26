@@ -1,3 +1,4 @@
+import requests
 # -*- coding: utf-8 -*-
 """
 Yelp API v2.0 code sample.
@@ -23,7 +24,7 @@ import csv
 API_HOST = 'api.yelp.com'
 DEFAULT_TERM = 'Fashion'
 DEFAULT_LOCATION = 'Atlanta, GA'
-SEARCH_LIMIT = 4
+SEARCH_LIMIT = 50
 SEARCH_PATH = '/v2/search/'
 BUSINESS_PATH = '/v2/business/'
 
@@ -116,16 +117,40 @@ def query_api(term, location):
 
     business_id = businesses[0]['id']
 
-    print u'{0} businesses found, querying business info for the top result "{1}" ...'.format(
-        len(businesses),
-        business_id
-    )
+    #print u'{0} businesses found, querying business info for the top result "{1}" ...'.format(
+       # len(businesses),
+        #business_id
+    #)
 
     response = get_business(business_id)
 
-    print u'Result for business "{0}" found:'.format(business_id)
-    pprint.pprint(response, indent=2)
+    #print u'Result for business "{0}" found:'.format(business_id)
+    #pprint.pprint(response, indent=2)
     return businesses
+
+def sendToCapitalOne(name,categories,street_name,state_name,city_name,postal_code, houseNumber,longitude,latitude):
+    baseURL="http://api.reimaginebanking.com/"
+    key= "?key=a990c6605c6d16f21df0ac6928050ee3"
+    merchantURL=baseURL +"merchants"+ key
+    body={
+        "name": name,
+        "category": categories,
+        "address": {
+            "street_number": houseNumber,
+            "street_name": street_name,
+            "city": city_name,
+            "state": state_name,
+            "zip": postal_code
+        },
+        "geocode": {
+        "lat": latitude,
+        "lng": longitude
+        }
+        }
+    r=requests.post(merchantURL,json=body)
+    print r.text
+    
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -136,12 +161,43 @@ def main():
     input_values = parser.parse_args()
     try:
        parsed_json = query_api(input_values.term, input_values.location)
-       print(parsed_json[0]['rating_img_url']), "dsakljsad;klgja;gja;gklj"
-       with open('Data.csv', 'wb') as csvfile:
-            spamwriter = csv.writer(csvfile, delimiter=' ',
-                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            for business in parsed_json:
-                spamwriter.writerow([business['id'], business['categories'], business['location']['address'], business['location']['coordinate']['latitude'], business['location']['coordinate']['longitude'], business['rating'], business['review_count']])
+       #print (parsed_json)
+       
+       #gets the category for us
+       #for i in range(4):
+        #print(parsed_json[0]["categories"][0][0])
+        #print(parsed_json[0]["name"])
+        #print(parsed_json[0][""])
+        
+       for business in parsed_json:
+          name=business["id"]
+          #print("Name:"+business["id"])
+          categories=business["categories"][0][0]
+          #print("Categories:"+business["categories"][0][0])
+          street_name=business["location"]["neighborhoods"][0]
+          #print("Street Name:"+business["location"]["neighborhoods"][0])
+          state_name=business["location"]["state_code"]
+          #print("State Name:"+business["location"]["state_code"])
+          city_name=business["location"]["city"]
+          #print("City Name:"+business["location"]["city"])
+          longitude=str(business["location"]["coordinate"]["longitude"])
+          #print("Longitude:"+str(business["location"]["coordinate"]["longitude"]))
+          zip_code=str(business["location"]["postal_code"])
+          #print("Postal Code:"+str(business["location"]["postal_code"]))
+          latitude=str(business["location"]["coordinate"]["latitude"])
+          #print("Latitude:"+str(business["location"]["coordinate"]["latitude"]))
+          houseNumber=business["location"]["display_address"][0][0]
+          #print("House Number: "+ business["location"]["display_address"][0])
+          sendToCapitalOne(name,categories,street_name,state_name,city_name, zip_code, houseNumber, longitude,latitude)
+
+       #sendToCapitalOne()
+       #with open('Data.csv', 'wb') as csvfile:
+        #    spamwriter = csv.writer(csvfile, delimiter=' ',
+         #                   quotechar='|', quoting=csv.QUOTE_MINIMAL)
+          #  for business in parsed_json:
+           #     spamwriter.writerow([business['id'], business['categories'], business['location']['address'], business['location']['coordinate']['latitude'], business['location']['coordinate']['longitude'], business['rating'], business['review_count']])
+    
+
     except urllib2.HTTPError as error:
         sys.exit('Encountered HTTP error {0}. Abort program.'.format(error.code))
 
