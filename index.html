@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Capital One Market predictor</title>
+ 
+ 
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+ 
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+
+</head>
+ 
+<body>
+ 
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li role="presentation" class="active"><a href="#">Home</a>
+                    </li>
+                    <li role="presentation"><a href="#">Sign In</a>
+                    </li>
+                    <li role="presentation"><a href="showSignUp">Sign Up</a>
+                    </li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">Python Flask App</h3>
+        </div>
+ 
+        <div class="jumbotron">
+            <h1>Capital One Market Predictor</h1>
+        </div>
+ 
+        <div class="row marketing">
+            <div class="col-lg-6">
+                <h4>What category does your Business belong to?</h4>
+                
+
+                
+
+                <script type="text/javascript">
+                //<!--
+                function goToURL(val){
+                location.href = val; 
+                }
+                //-->
+                </script>
+
+                <form action="nextPage.html" method="GET">
+                    <select id="categories" name="categories" size="3" multiple>
+                    <option value="Fashion">Fashion</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Shoes">Shoes</option>
+                    <option value="Casuals">Casuals</option>
+                    <option value="Jackets">Jackets</option>
+                    </select>
+                    <h4>What is the zip code you want to start your Business in?</h4>
+                    <input type="text" id="zipCode" name="zipCode" value="Zip Code">
+                
+                    <h4>When would you like to start your businness?(Format: mm/dd/yyyy) </h4>
+                    <input type=text id=startDate name="startDate" value="mm/dd/yyyy">
+                    <BUTTON>Submit</BUTTON>
+                </from>
+            </div>
+ 
+
+ 
+        <footer class="footer">
+            <p>&copy; Company 2015</p>
+        </footer>
+ 
+    </div>
+</body>
+ 
+</html>
+
