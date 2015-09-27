@@ -10,6 +10,7 @@
     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
 
     <script type="text/javascript" src="jscharts.js"></script>
+    <script src="jquery-1.11.3.min.js"></script>
 
 </head>
  
@@ -22,7 +23,7 @@
     function processForm()
     {
         
-        alert(location.href)
+        // alert(location.href)
         var parameters = location.search.substring(1).split("&");
         
         for(i=0; i< 3; i++)
@@ -38,16 +39,18 @@
         var Values=[7];
         if(category=="Casuals")
             Values[0]=1;
+        else Values[0]=0;
         
         if(category=="Jackets")
             Values[1]=1;
+        else Values[1]=0;
 
         if(category=="Shoes")
             Values[2]=1;
-
+else Values[2]=0;
         if(category=="Formals")
             Values[3]=1;
-
+else Values[3]=0;
         Values[4]=zipCode;
         Values[5]=startDate;
         Values[6]=0;
@@ -55,37 +58,92 @@
 
 
         var obj={}
-        /*data = {
-                "Inputs:" {
-                    "input1":
-                    {
-                        "ColumnNames":["casuals", "jackets", "shoes", "formals", "zip_code", "month", "sales"],
-                        "Values": [1,1,0,1,"30318",4,"10"],
-                    },
-                    "GlobalParameters":{
+        
+var d = {
 
-                    }
+        Inputs: {
 
-                }
+                input1:
+                {
+                    ColumnNames: ["casuals", "jackets", "shoes", "formals", "zip_code", "month", "sales"],
+                    Values: [[ parseInt(Values[0]), parseInt(Values[1]), parseInt(Values[2]),parseInt(Values[3]),parseInt(Values[4]), 0, "10" ],
+[ parseInt(Values[0]), parseInt(Values[1]), parseInt(Values[2]),parseInt(Values[3]),parseInt(Values[4]), 1, "10" ],
+[ parseInt(Values[0]), parseInt(Values[1]), parseInt(Values[2]),parseInt(Values[3]),parseInt(Values[4]), 2, "10" ],
+[ parseInt(Values[0]), parseInt(Values[1]), parseInt(Values[2]),parseInt(Values[3]),parseInt(Values[4]), 3, "10" ],
+[ parseInt(Values[0]), parseInt(Values[1]), parseInt(Values[2]),parseInt(Values[3]),parseInt(Values[4]), 4, "10" ],
+[ parseInt(Values[0]), parseInt(Values[1]), parseInt(Values[2]),parseInt(Values[3]),parseInt(Values[4]), 5, "10" ],
+[ parseInt(Values[0]), parseInt(Values[1]), parseInt(Values[2]),parseInt(Values[3]),parseInt(Values[4]), 5, "10" ],
+[ parseInt(Values[0]), parseInt(Values[1]), parseInt(Values[2]),parseInt(Values[3]),parseInt(Values[4]), 7, "10" ],
+[ parseInt(Values[0]), parseInt(Values[1]), parseInt(Values[2]),parseInt(Values[3]),parseInt(Values[4]), 8, "10" ],
+[ parseInt(Values[0]), parseInt(Values[1]), parseInt(Values[2]),parseInt(Values[3]),parseInt(Values[4]), 9, "10" ],
+[ parseInt(Values[0]), parseInt(Values[1]), parseInt(Values[2]),parseInt(Values[3]),parseInt(Values[4]), 10, "10" ],
+[ parseInt(Values[0]), parseInt(Values[1]), parseInt(Values[2]),parseInt(Values[3]),parseInt(Values[4]), 11, "10" ]
+                    ]
+                }       },
+            GlobalParameters: {
+}
+    
+    }
 
-        }*/
-        //alert(category);
-        //alert(zipCode);
-        //alert(startDate);
-        var myData = new Array([10, 2], [15, 0], [18, 3], [19, 6], [20, 8.5], [25, 10], [30, 9], [35, 8], [40, 5], [45, 6], [50, 2.5]);
+    console.log(d)
+
+        $.ajax({
+    url: 'https://ussouthcentral.services.azureml.net/workspaces/7f29d25c24934d8d93a67b615ad2714a/services/28f9eb3825f448eaa9bfe10a4ffbf888/execute?api-version=2.0&details=true',
+    type: 'post',
+    data: JSON.stringify(d),
+
+    headers:
+
+{'Content-Type':'application/json', 'Authorization':('Bearer nM31V5EgVJ7j2GAqDmTzNlbjlYiqkb8/kZLqjwsL6H6LzSmJqbbdXNel9SxR8oGkhYnb2ENMNj5Iuy1KZrIJWQ==')}
+    ,
+    dataType: 'json',
+    success: function (data) {
+        // console.info(data);
+// console.info(data["Results"]["output1"]["value"])
+
+console.info(data["Results"]["output1"]["value"]["Values"][0][7])
+        // alert(category);
+        // alert(zipCode);
+        // alert(startDate);
+        var myData = new Array([0, parseInt(data["Results"]["output1"]["value"]["Values"][0][7])],
+
+            [1, parseInt(data["Results"]["output1"]["value"]["Values"][1][7])],
+            [2, parseInt(data["Results"]["output1"]["value"]["Values"][2][7])],
+            [3, parseInt(data["Results"]["output1"]["value"]["Values"][3][7])],
+            [4, parseInt(data["Results"]["output1"]["value"]["Values"][4][7])],
+            [5, parseInt(data["Results"]["output1"]["value"]["Values"][10][7])],
+
+            [6, parseInt(data["Results"]["output1"]["value"]["Values"][6][7])],
+            [7, parseInt(data["Results"]["output1"]["value"]["Values"][7][7])],
+            [8, parseInt(data["Results"]["output1"]["value"]["Values"][8][7])],
+            [9, parseInt(data["Results"]["output1"]["value"]["Values"][9][7])],
+            [10, parseInt(data["Results"]["output1"]["value"]["Values"][10][7])],
+
+            [11, parseInt(data["Results"]["output1"]["value"]["Values"][11][7])]);
+
+
+
+
         var myChart = new JSChart('chartcontainer', 'line');
         myChart.setDataArray(myData);
-        myChart.setAxisNameX('Date');
-        myChart.setAxisNameY('Sales');
+        myChart.setAxisNameX('Month');
+        myChart.setAxisNameY('Predicted Sales');
         myChart.setLineColor('#8D9386');
-        myChart.setLineWidth(4);
+        myChart.setLineWidth(8);
         myChart.setTitleColor('#7D7D7D');
         myChart.setAxisColor('#9F0505');
         myChart.setGridColor('#a4a4a4');
+        myChart.setTitle('Monthly Sales Pattern Prediction');
         myChart.setAxisValuesColor('#333639');
         myChart.setAxisNameColor('#333639');
         myChart.setTextPaddingLeft(0);
         myChart.draw();
+
+
+    }
+});
+
+        
     }
     processForm();
     </script>

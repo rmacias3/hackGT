@@ -1,0 +1,12 @@
+$.ajax({
+    url: 'https://ussouthcentral.services.azureml.net/workspaces/7f29d25c24934d8d93a67b615ad2714a/services/28f9eb3825f448eaa9bfe10a4ffbf888/execute?api-version=2.0&details=true',
+    type: 'post',
+    headers:
+
+{'Content-Type':'application/json', 'Authorization':'Bearer nM31V5EgVJ7j2GAqDmTzNlbjlYiqkb8/kZLqjwsL6H6LzSmJqbbdXNel9SxR8oGkhYnb2ENMNj5Iuy1KZrIJWQ=='}
+    },
+    dataType: 'json',
+    success: function (data) {
+        console.info(data);
+    }
+});
